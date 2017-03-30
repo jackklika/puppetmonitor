@@ -5,8 +5,3 @@
 </head>
 <body>
 	<h1>Puppet Monitor</h1>
-	<table border="0">
-		<tr><th>Name</th><th>Last Cataloged</th></tr>
-		
-	</table>
-</body>

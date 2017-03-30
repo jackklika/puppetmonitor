@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"html/template"
 )
 
 func main() {
@@ -26,6 +27,13 @@ func main() {
 	if parseerr != nil {
 		log.Fatal(parseerr)
 	}
+
+
+	fmap := template.FuncMap {
+		"listnodes": func(n anode) string {
+			return //list nodes 
+	}
+
 
 	fmt.Println("Here is a list of all nodes:\n")
 	fmt.Println(reflect.TypeOf(data))
