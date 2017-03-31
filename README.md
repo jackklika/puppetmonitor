@@ -12,3 +12,4 @@ Make sure it's named pdbout.json and the server should parse it.
 - Have the script take a server and some keys and it should be able to query the server itself every once and a while.
 - Custom sorting
 - CSS
+- Color of catalog timestamp would go from black to red with a intensity proportional to how long ago it was cataloged. More red == More outdated

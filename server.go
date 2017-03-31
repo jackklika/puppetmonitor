@@ -19,7 +19,7 @@ func main() {
 
 	var data Node
 	// Stores pdbout.json into byte array jsonout
-	jsonout, readerr := ioutil.ReadFile("pdbout.json")
+	jsonout, readerr := ioutil.ReadFile("./pdbout.json")
 
 	if readerr != nil {
 		log.Fatal(readerr)
@@ -33,7 +33,8 @@ func main() {
 	sortutil.AscByField(data, "Certname")
 
 	for _, node := range data {
-		htmllist += fmt.Sprintf("<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n", node.Certname, node.CatalogEnvironment, node.CatalogTimestamp)
+		// there's definately a cleaner way to do this.
+		htmllist += fmt.Sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", node.Certname, node.CatalogEnvironment, node.LatestReportStatus, node.CatalogTimestamp)
 	}
 
 //	fmt.Println(htmllist)
@@ -48,7 +49,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	temp := template.New("Puppet Template")
 	temp, _ = temp.Parse(string(index))
-	fmt.Println(r.RemoteAddr)
+	fmt.Printf("%s [%s]\n\n", r.RemoteAddr, time.Now().Format("15:04:05 1/2/2006 MST"))
 	temp.Execute(w, template.HTML(htmllist))
 	//	fmt.Fprintf(w, string(index))
 }
