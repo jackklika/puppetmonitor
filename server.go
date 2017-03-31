@@ -19,7 +19,7 @@ func main() {
 
 	var data Node
 	// Stores pdbout.json into byte array jsonout
-	jsonout, readerr := ioutil.ReadFile("pdbout1.json")
+	jsonout, readerr := ioutil.ReadFile("pdbout.json")
 
 	if readerr != nil {
 		log.Fatal(readerr)
