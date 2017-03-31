@@ -3,22 +3,22 @@ package main
 // http://go-database-sql.org/retrieving.html
 
 import (
-	"reflect"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
-//	"html/template"
 )
+
+var htmllist string
 
 func main() {
 
 	var data Node
 	// Stores pdbout.json into byte array jsonout
 	jsonout, readerr := ioutil.ReadFile("pdbout.json")
-//	index, _ := ioutil.ReadFile("static/index.html")
 
 	if readerr != nil {
 		log.Fatal(readerr)
@@ -28,20 +28,13 @@ func main() {
 	if parseerr != nil {
 		log.Fatal(parseerr)
 	}
-
-/*
-	fmap := template.FuncMap {
-		"listnodes": func(n anode) string {
-			return //list nodes 
+	for _, node := range data {
+		//fmt.Println(node.Certname)
+		htmllist += fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", node.Certname, node.CatalogTimestamp)
 	}
-*/
 
-	fmt.Println("Here is a list of all nodes:\n")
-	fmt.Println(reflect.TypeOf(data))
-	for _,node := range data {
-		fmt.Println(node.Certname)
-	}
-//	http.Handle("/", http.FileServer(http.Dir("./static")))
+	fmt.Println(htmllist)
+
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":1337", nil)
 
@@ -49,7 +42,11 @@ func main() {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	index, _ := ioutil.ReadFile("static/index.html")
-	fmt.Fprintf(w, string(index))
+
+	temp := template.New("Puppet Template")
+	temp, _ = temp.Parse(string(index))
+	temp.Execute(w, template.HTML(htmllist))
+	//	fmt.Fprintf(w, string(index))
 }
 
 type Node []struct {
