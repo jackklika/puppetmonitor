@@ -3,6 +3,7 @@ package main
 // http://go-database-sql.org/retrieving.html
 
 import (
+	"github.com/patrickmn/sortutil"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -18,7 +19,7 @@ func main() {
 
 	var data Node
 	// Stores pdbout.json into byte array jsonout
-	jsonout, readerr := ioutil.ReadFile("pdbout.json")
+	jsonout, readerr := ioutil.ReadFile("pdbout1.json")
 
 	if readerr != nil {
 		log.Fatal(readerr)
@@ -28,12 +29,14 @@ func main() {
 	if parseerr != nil {
 		log.Fatal(parseerr)
 	}
+
+	sortutil.AscByField(data, "Certname")
+
 	for _, node := range data {
-		//fmt.Println(node.Certname)
-		htmllist += fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", node.Certname, node.CatalogTimestamp)
+		htmllist += fmt.Sprintf("<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n", node.Certname, node.CatalogEnvironment, node.CatalogTimestamp)
 	}
 
-	fmt.Println(htmllist)
+//	fmt.Println(htmllist)
 
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":1337", nil)
@@ -45,6 +48,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	temp := template.New("Puppet Template")
 	temp, _ = temp.Parse(string(index))
+	fmt.Println(r.RemoteAddr)
 	temp.Execute(w, template.HTML(htmllist))
 	//	fmt.Fprintf(w, string(index))
 }
