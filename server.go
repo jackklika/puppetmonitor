@@ -32,9 +32,18 @@ func main() {
 
 	sortutil.AscByField(data, "Certname")
 
+	// Iterates through each node.
 	for _, node := range data {
-		// there's definately a cleaner way to do this.
-		htmllist += fmt.Sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", node.Certname, node.CatalogEnvironment, node.LatestReportStatus, node.CatalogTimestamp)
+		// Error checking
+		var nodeerr bool = false
+		if (node.LatestReportStatus == "failed"){
+			nodeerr = true
+		}
+		var redrow string = ""
+		if (nodeerr == true){
+			redrow = ` bgcolor="#ffdddd"`
+		}
+		htmllist += fmt.Sprintf("<tr%s><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", redrow, node.Certname, node.CatalogEnvironment, node.LatestReportStatus, node.CatalogTimestamp)
 	}
 
 //	fmt.Println(htmllist)
