@@ -14,10 +14,10 @@ import (
 )
 
 var htmllist string
-
+var data Node
 func main() {
 
-	var data Node
+
 	// Stores pdbout.json into byte array jsonout
 	jsonout, readerr := ioutil.ReadFile("./pdbout.json")
 
@@ -35,31 +35,23 @@ func main() {
 	// Iterates through each node.
 	for _, node := range data {
 		// Error checking
-		var nodeerr bool = false
-		if (node.LatestReportStatus == "failed"){
-			nodeerr = true
-		}
-		var redrow string = ""
-		if (nodeerr == true){
-			redrow = ` bgcolor="#ffdddd"`
-		}
-		htmllist += fmt.Sprintf("<tr%s><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", redrow, node.Certname, node.CatalogEnvironment, node.LatestReportStatus, node.CatalogTimestamp)
+		fmt.Println((node.Certname))
 	}
 
 //	fmt.Println(htmllist)
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", homehandler)
 	http.ListenAndServe(":1337", nil)
 
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func homehandler(w http.ResponseWriter, r *http.Request) {
 	index, _ := ioutil.ReadFile("static/index.html")
 
 	temp := template.New("Puppet Template")
 	temp, _ = temp.Parse(string(index))
 	fmt.Printf("[%s] %s\n", time.Now().Format("15:04:05 1/2/2006 MST"), r.RemoteAddr)
-	temp.Execute(w, template.HTML(htmllist))
+	temp.Execute(w, data)
 	//	fmt.Fprintf(w, string(index))
 }
 
@@ -80,3 +72,9 @@ type Node []struct {
 	CatalogTimestamp             time.Time   `json:"catalog_timestamp"`
 	LatestReportStatus           string      `json:"latest_report_status"`
 }
+
+/*
+func reqnodeHTML(field interface{}) {
+	return fmt.Sprintf("<td>%s</td>")
+}
+*/
