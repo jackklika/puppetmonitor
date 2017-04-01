@@ -8,7 +8,13 @@
 	<h1>Puppet Monitor</h1>
 	<table>
 		<tr><th>Name</th><th>Catalog Env</th><th>Last Run Status</th><th>Last Cataloged</th></tr>
-		{{ . }}		
+		{{ range .}}<tr>
+		<td>{{ .Certname }}</td>
+		<td>{{ .CatalogEnvironment }}</td>
+		<td>{{ .LatestReportStatus }}</td>
+		<td>{{ .CatalogTimestamp}}<td>
+		</tr>
+		{{ end }}	
 	</table>
 </body>
 </html>
