@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>TEST SITE</title>
+	<title>Puppet Monitor</title>
 	<style>
 		tr.failed {
 			background-color:#FFDDDD;
 		}
 		tr.changed {
-			background-color:#DDFFDD;
+			background-color:#EEFFEE;
 		}
 	</style>
 </head>
 <body>
+	{{ $element1 := index . 0 }}
 	<h1>Puppet Monitor</h1>
+	<p>This is a list of all enabled nodes. This report was run on {{ $element1.ReportTimestamp}}</p>
+
+	<hr>
+
 	<table>
 		<tr><th>Name</th><th>Catalog Env</th><th>Last Run Status</th><th>Last Cataloged</th></tr>
 		{{ range .}}<tr class="{{.LatestReportStatus}}">

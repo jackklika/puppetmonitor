@@ -31,15 +31,6 @@ func main() {
 	}
 
 	sortutil.AscByField(data, "Certname")
-
-	// Iterates through each node.
-	for _, node := range data {
-		// Error checking
-		fmt.Println((node.Certname))
-	}
-
-//	fmt.Println(htmllist)
-
 	http.HandleFunc("/", homehandler)
 	http.ListenAndServe(":1337", nil)
 
