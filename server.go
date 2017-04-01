@@ -58,7 +58,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	temp := template.New("Puppet Template")
 	temp, _ = temp.Parse(string(index))
-	fmt.Printf("%s [%s]\n\n", r.RemoteAddr, time.Now().Format("15:04:05 1/2/2006 MST"))
+	fmt.Printf("[%s] %s\n", time.Now().Format("15:04:05 1/2/2006 MST"), r.RemoteAddr)
 	temp.Execute(w, template.HTML(htmllist))
 	//	fmt.Fprintf(w, string(index))
 }
