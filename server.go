@@ -19,7 +19,13 @@ func main() {
 
 
 	// Stores pdbout.json into byte array jsonout
-	jsonout, readerr := ioutil.ReadFile("./pdbout.json")
+	http.HandleFunc("/", homehandler)
+	log.Fatal(http.ListenAndServe(":80", nil))
+
+}
+
+func homehandler(w http.ResponseWriter, r *http.Request) {
+	jsonout, readerr := ioutil.ReadFile("/opt/puppetmonitor/pdbout.json")
 
 	if readerr != nil {
 		log.Fatal(readerr)
@@ -31,13 +37,8 @@ func main() {
 	}
 
 	sortutil.AscByField(data, "Certname")
-	http.HandleFunc("/", homehandler)
-	http.ListenAndServe(":1337", nil)
 
-}
-
-func homehandler(w http.ResponseWriter, r *http.Request) {
-	index, _ := ioutil.ReadFile("static/index.html")
+	index, _ := ioutil.ReadFile("/opt/puppetmonitor/static/index.html")
 
 	temp := template.New("Puppet Template")
 	temp, _ = temp.Parse(string(index))

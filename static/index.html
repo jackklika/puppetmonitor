@@ -9,16 +9,19 @@
 		tr.changed {
 			background-color:#EEFFEE;
 		}
+		.main {
+			margin: 0px auto;	
+		}
 	</style>
 </head>
 <body>
 	{{ $element1 := index . 0 }}
 	<h1>Puppet Monitor</h1>
-	<p>This is a list of all enabled nodes. This report was run on {{ $element1.ReportTimestamp}}</p>
+	<p>This is a list of all enabled nodes.</p>
 
 	<hr>
 
-	<table>
+	<table class="main">
 		<tr><th>Name</th><th>Catalog Env</th><th>Last Run Status</th><th>Last Cataloged</th></tr>
 		{{ range .}}<tr class="{{.LatestReportStatus}}">
 		<td>{{ .Certname }}</td>
