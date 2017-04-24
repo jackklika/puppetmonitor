@@ -25,6 +25,7 @@ func main() {
 }
 
 func homehandler(w http.ResponseWriter, r *http.Request) {
+	// Reads pdbout.json, which is a json file fetched from puppetdb every minute by a cronjob.
 	jsonout, readerr := ioutil.ReadFile("/opt/puppetmonitor/pdbout.json")
 
 	if readerr != nil {
@@ -41,17 +42,23 @@ func homehandler(w http.ResponseWriter, r *http.Request) {
 	index, _ := ioutil.ReadFile("/opt/puppetmonitor/static/index.html")
 
 	temp := template.New("Puppet Template")
-	temp = temp.Funcs(template.FuncMap{"curTime": curTime})
+	temp = temp.Funcs(template.FuncMap{"curTime": curTime, "minusCurTime" : minusCurTime})
 	temp, _ = temp.Parse(string(index))
-	fmt.Printf("[%s] %s\n", time.Now().Format("15:04:05 1/2/2006 MST"), r.RemoteAddr)
+	//fmt.Printf("[%s] %s\n", time.Now().Format("15:04:05 1/2/2006 MST"), r.RemoteAddr)
 	temp.Execute(w, data)
 	//	fmt.Fprintf(w, string(index))
 }
 
 func curTime(t time.Time) string {
 	delta := time.Since(t)
-	return fmt.Sprintf("%v\n", delta.Nanoseconds()/time.Minute.Nanoseconds())
+	return fmt.Sprintf("%v:%v\n", delta.Nanoseconds()/time.Minute.Nanoseconds(), delta.Nanoseconds()/time.Second.Nanoseconds()%60)
 //	return fmt.Sprintf("%s", delta)
+}
+
+func minusCurTime(t time.Time) string {
+	delta := time.Since(t)
+	diff := 255 - delta.Nanoseconds()/time.Minute.Nanoseconds()
+	return fmt.Sprintf("%v", diff)
 }
 
 
