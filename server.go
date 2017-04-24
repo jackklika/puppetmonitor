@@ -41,11 +41,19 @@ func homehandler(w http.ResponseWriter, r *http.Request) {
 	index, _ := ioutil.ReadFile("/opt/puppetmonitor/static/index.html")
 
 	temp := template.New("Puppet Template")
+	temp = temp.Funcs(template.FuncMap{"curTime": curTime})
 	temp, _ = temp.Parse(string(index))
 	fmt.Printf("[%s] %s\n", time.Now().Format("15:04:05 1/2/2006 MST"), r.RemoteAddr)
 	temp.Execute(w, data)
 	//	fmt.Fprintf(w, string(index))
 }
+
+func curTime(t time.Time) string {
+	delta := time.Since(t)
+	return fmt.Sprintf("%v\n", delta.Nanoseconds()/time.Minute.Nanoseconds())
+//	return fmt.Sprintf("%s", delta)
+}
+
 
 type Node []struct {
 	Deactivated                  interface{} `json:"deactivated"`

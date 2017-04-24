@@ -22,12 +22,13 @@
 	<hr>
 
 	<table class="main">
-		<tr><th>Name</th><th>Catalog Env</th><th>Last Run Status</th><th>Last Cataloged</th></tr>
+		<tr><th>Name</th><th>Catalog Env</th><th>Last Run Status</th><th>Last Cataloged</th><th>Last Report Δ</tr>
 		{{ range .}}<tr class="{{.LatestReportStatus}}">
 		<td>{{ .Certname }}</td>
 		<td>{{ .CatalogEnvironment }}</td>
 		<td>{{ .LatestReportStatus }}</td>
 		<td>{{ .CatalogTimestamp}}<td>
+		<td>{{ .CatalogTimestamp | curTime }}</td>
 		</tr>
 		{{ end }}	
 	</table>
