@@ -17,6 +17,8 @@ var htmllist string
 var data Node
 func main() {
 
+	//fmt.Println(letstls())
+
 	readandgenerate()
 
 	http.HandleFunc("/nodes/", nodeshandler)
@@ -70,9 +72,10 @@ func nodeshandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if (isnode == false) {
-		nodename = "NOTANODE"
+		fmt.Fprintf(w, "This is not a node")
+	} else {
+		fmt.Fprintf(w, letstls(nodename))
 	}
-		fmt.Fprintf(w, nodename)
 
 //	fmt.Fprintf(w, stringout)
 
