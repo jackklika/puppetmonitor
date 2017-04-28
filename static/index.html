@@ -30,7 +30,7 @@
 			<th>Last Cataloged Δ</th>
 		{{ range .}}
 		<tr class="{{.LatestReportStatus}}">
-			<td>{{ .Certname }}</td>
+			<td><a href="/nodes/{{ .Certname }}">{{ .Certname }}<a></td>
 			<td>{{ .CatalogEnvironment }}</td>
 			<td>{{ .LatestReportStatus }}</td>
 			<td>{{ .CatalogTimestamp }}</td>

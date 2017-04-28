@@ -17,15 +17,18 @@ var htmllist string
 var data Node
 func main() {
 
+	readandgenerate()
 
-	// Stores pdbout.json into byte array jsonout
-	http.HandleFunc("/todo", todohandler)
+	http.HandleFunc("/nodes/", nodeshandler)
 	http.HandleFunc("/", homehandler)
 	log.Fatal(http.ListenAndServe(":80", nil))
 
+
+
 }
 
-func homehandler(w http.ResponseWriter, r *http.Request) {
+func readandgenerate() {
+
 	// Reads pdbout.json, which is a json file fetched from puppetdb every minute by a cronjob.
 	jsonout, readerr := ioutil.ReadFile("/opt/puppetmonitor/pdbout.json")
 
@@ -40,6 +43,11 @@ func homehandler(w http.ResponseWriter, r *http.Request) {
 
 	sortutil.AscByField(data, "Certname")
 
+
+}
+
+func homehandler(w http.ResponseWriter, r *http.Request) {
+	readandgenerate();
 	index, _ := ioutil.ReadFile("/opt/puppetmonitor/static/index.html")
 
 	temp := template.New("Puppet Template")
@@ -50,10 +58,24 @@ func homehandler(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Fprintf(w, string(index))
 }
 
-func todohandler(w http.ResponseWriter, r *http.Request) {
+func nodeshandler(w http.ResponseWriter, r *http.Request) {
+	nodename := r.URL.Path[len("/nodes/"):] // fqdn/nodes/nodename
 
+//	stringout := ""
+	isnode := false
+	for _,n := range data {
+		//stringout += fmt.Sprintf("%s\n", n.Certname)
+		if (nodename == n.Certname){
+			isnode = true
+		}
+	}
+	if (isnode == false) {
+		nodename = "NOTANODE"
+	}
+		fmt.Fprintf(w, nodename)
 
-fmt.Fprintf(w, "todo")
+//	fmt.Fprintf(w, stringout)
+
 }
 
 func curTime(t time.Time) string {
