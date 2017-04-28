@@ -19,6 +19,7 @@ func main() {
 
 
 	// Stores pdbout.json into byte array jsonout
+	http.HandleFunc("/todo", todohandler)
 	http.HandleFunc("/", homehandler)
 	log.Fatal(http.ListenAndServe(":80", nil))
 
@@ -49,9 +50,15 @@ func homehandler(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Fprintf(w, string(index))
 }
 
+func todohandler(w http.ResponseWriter, r *http.Request) {
+
+
+fmt.Fprintf(w, "todo")
+}
+
 func curTime(t time.Time) string {
 	delta := time.Since(t)
-	return fmt.Sprintf("%v:%v\n", delta.Nanoseconds()/time.Minute.Nanoseconds(), delta.Nanoseconds()/time.Second.Nanoseconds()%60)
+	return fmt.Sprintf("%02d:%02d\n", delta.Nanoseconds()/time.Minute.Nanoseconds(), delta.Nanoseconds()/time.Second.Nanoseconds()%60)
 //	return fmt.Sprintf("%s", delta)
 }
 
