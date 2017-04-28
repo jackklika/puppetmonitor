@@ -63,21 +63,50 @@ func homehandler(w http.ResponseWriter, r *http.Request) {
 func nodeshandler(w http.ResponseWriter, r *http.Request) {
 	nodename := r.URL.Path[len("/nodes/"):] // fqdn/nodes/nodename
 
-//	stringout := ""
 	isnode := false
 	for _,n := range data {
-		//stringout += fmt.Sprintf("%s\n", n.Certname)
 		if (nodename == n.Certname){
 			isnode = true
 		}
 	}
 	if (isnode == false) {
 		fmt.Fprintf(w, "This is not a node")
+		return
 	} else {
-		fmt.Fprintf(w, letstls(nodename))
-	}
+		var out string
+		out += "<html><body><h1>" + nodename + "</h1><ul>"
+		var nodedata IndNode
+		jsonout := letstls(nodename)
+		parseerr := json.Unmarshal([]byte(jsonout), &nodedata)
+		if parseerr != nil{
+			log.Fatal(parseerr)
+		}
 
-//	fmt.Fprintf(w, stringout)
+		for _,n := range nodedata {
+			switch nval := n.Value.(type) {
+			case string:
+				out += fmt.Sprintf("<li>%s: %s</li>\n", n.Name, n.Value)
+			case float64:
+				out += fmt.Sprintf("<li>%s: %v</li>\n", n.Name, n.Value)
+
+			case bool:
+				out += fmt.Sprintf("<li>%s: %v</li>\n", n.Name, n.Value)
+
+			case []interface{}:
+			
+			case map[string]interface {}:
+				out += "\t<ul>\n"
+				for i, u := range nval {
+					out += fmt.Sprintf("\t<li>%s: %v</li>\n", i, u)
+				}
+				out += "\t</ul>\n"
+			}
+		}
+
+
+		out += "</ul></body></html>"
+		fmt.Fprintf(w, out)
+	}
 
 }
 
@@ -93,6 +122,12 @@ func minusCurTime(t time.Time) string {
 	return fmt.Sprintf("%v", diff)
 }
 
+
+type IndNode []struct {
+	Certname		string	`json:"certname"`
+	Name			string	`json:"name"`
+	Value			interface{}	`json:"value"`
+}
 
 type Node []struct {
 	Deactivated                  interface{} `json:"deactivated"`
