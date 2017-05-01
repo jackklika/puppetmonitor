@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/patrickmn/sortutil"
+	"strings"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -74,7 +75,7 @@ func nodeshandler(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		var out string
-		out += "<html><body><h1>" + nodename + "</h1><ul>"
+		out += "<html><body><h1>" + nodename + "</h1>"
 		var nodedata IndNode
 		jsonout := letstls(nodename)
 		parseerr := json.Unmarshal([]byte(jsonout), &nodedata)
@@ -82,29 +83,28 @@ func nodeshandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(parseerr)
 		}
 
+		out += "<ul>"
 		for _,n := range nodedata {
+			if (strings.Contains(n.Name, "ssh")){
+				continue
+			}
+			out += "<li>"
 			switch nval := n.Value.(type) {
-			case string:
-				out += fmt.Sprintf("<li>%s: %s</li>\n", n.Name, n.Value)
-			case float64:
-				out += fmt.Sprintf("<li>%s: %v</li>\n", n.Name, n.Value)
+			case string, float64, bool:
+				out += fmt.Sprintf("%s: %v", n.Name, n.Value)
 
-			case bool:
-				out += fmt.Sprintf("<li>%s: %v</li>\n", n.Name, n.Value)
-
-			case []interface{}:
-			
 			case map[string]interface {}:
-				out += "\t<ul>\n"
+				out += fmt.Sprintf("\t%s<ul>\n", n.Name)
 				for i, u := range nval {
 					out += fmt.Sprintf("\t<li>%s: %v</li>\n", i, u)
 				}
 				out += "\t</ul>\n"
 			}
+			out += "</li>\n"
 		}
+		out += "</ul>"
 
-
-		out += "</ul></body></html>"
+		out += "</body></html>"
 		fmt.Fprintf(w, out)
 	}
 
