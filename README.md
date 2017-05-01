@@ -13,3 +13,6 @@ Make sure it's named pdbout.json and the server should parse it.
 - Custom sorting
 - CSS
 - Color of catalog timestamp would go from black to red with a intensity proportional to how long ago it was cataloged. More red == More outdated
+
+## Screenshot
+![Screenshot of Puppet Monitor](https://github.com/jackklika/puppetmonitor/raw/master/pm-scrot.png)
