@@ -2,17 +2,11 @@
 The aim of this project is to provide a simple webpage that takes puppet json reports, turns them into go objects, and displays their status.
 
 ## Usage
-Query the puppetdb's nodes. The command I use is:
-
-	curl 'https://puppetdb.some.site.com:8081/pdb/query/v4/nodes' --tlsv1 --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem --cert /etc/puppetlabs/puppet/ssl/certs/some.site.com.pem --key /etc/puppetlabs/puppet/ssl/private_keys/some.site.com.pem
-
-Make sure it's named pdbout.json and the server should parse it.
-
-## Todo
-- Have the script take a server and some keys and it should be able to query the server itself every once and a while.
-- Custom sorting
-- CSS
-- Color of catalog timestamp would go from black to red with a intensity proportional to how long ago it was cataloged. More red == More outdated
+1. Make sure golang is installed on your system.
+2. Go get this repo
+3. Configure the code so the path points to your puppetdb.
+4. Build the repo. Make sure port 80 is open.
+5. Run the generated binary as root. 
 
 ## Screenshot
 ![Screenshot of Puppet Monitor](https://github.com/jackklika/puppetmonitor/raw/master/pm-scrot.png)
