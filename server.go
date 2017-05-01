@@ -5,10 +5,10 @@ package main
 import (
 	"github.com/patrickmn/sortutil"
 	"strings"
+	"io/ioutil"
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -18,9 +18,6 @@ var htmllist string
 var data Node
 func main() {
 
-	//fmt.Println(letstls())
-
-	readandgenerate()
 
 	http.HandleFunc("/nodes/", nodeshandler)
 	http.HandleFunc("/", homehandler)
@@ -30,29 +27,16 @@ func main() {
 
 }
 
-func readandgenerate() {
+func homehandler(w http.ResponseWriter, r *http.Request) {
 
-	// Reads pdbout.json, which is a json file fetched from puppetdb every minute by a cronjob.
-	jsonout, readerr := ioutil.ReadFile("/opt/puppetmonitor/pdbout.json")
-
-	if readerr != nil {
-		log.Fatal(readerr)
-	}
-
-	parseerr := json.Unmarshal(jsonout, &data)
+	jsonout := letstls("https://puppetdb01.cgca.uwm.edu:8081/pdb/query/v4/nodes")
+	parseerr := json.Unmarshal([]byte(jsonout), &data)
 	if parseerr != nil {
 		log.Fatal(parseerr)
 	}
-
 	sortutil.AscByField(data, "Certname")
 
-
-}
-
-func homehandler(w http.ResponseWriter, r *http.Request) {
-	readandgenerate();
 	index, _ := ioutil.ReadFile("/opt/puppetmonitor/static/index.html")
-
 	temp := template.New("Puppet Template")
 	temp = temp.Funcs(template.FuncMap{"curTime": curTime, "minusCurTime" : minusCurTime})
 	temp, _ = temp.Parse(string(index))
@@ -77,7 +61,7 @@ func nodeshandler(w http.ResponseWriter, r *http.Request) {
 		var out string
 		out += "<html><body><h1>" + nodename + "</h1>"
 		var nodedata IndNode
-		jsonout := letstls(nodename)
+		jsonout := letstls(fmt.Sprintf("https://puppetdb01.cgca.uwm.edu:8081/pdb/query/v4/nodes/%s/facts", nodename))
 		parseerr := json.Unmarshal([]byte(jsonout), &nodedata)
 		if parseerr != nil{
 			log.Fatal(parseerr)

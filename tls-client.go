@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/tls"
-	"fmt"
 	"crypto/x509"
 	"flag"
 	"io/ioutil"
@@ -16,7 +15,7 @@ var (
 	caFile   = flag.String("CA", "/etc/puppetlabs/puppet/ssl/certs/ca.pem", "A PEM eoncoded CA's certificate file.")
 )
 
-func letstls(nodename string) string{
+func letstls(stringin string) string{
 	flag.Parse()
 
 	// Load client cert
@@ -43,7 +42,7 @@ func letstls(nodename string) string{
 	client := &http.Client{Transport: transport}
 
 	// Do GET something
-	resp, err := client.Get(fmt.Sprintf("https://puppetdb01.cgca.uwm.edu:8081/pdb/query/v4/nodes/%s/facts", nodename))
+	resp, err := client.Get(stringin)
 	if err != nil {
 		log.Fatal(err)
 	}
