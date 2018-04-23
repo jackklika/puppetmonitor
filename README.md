@@ -1,4 +1,6 @@
 # Puppetmonitor 
+**NOTE: This project is no longer maintained on this repo, and is instead [on gitlab](https://gitlab.com/jackklika/puppetmonitor).** 
+
 The aim of this project is to provide a simple webpage that takes puppet json reports, turns them into go objects, and displays their status.
 
 ## Usage
